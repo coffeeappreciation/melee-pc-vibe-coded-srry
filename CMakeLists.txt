@@ -463,6 +463,15 @@ if (NOT ANDROID AND NOT IOS AND NOT CMAKE_SYSTEM_NAME STREQUAL "iOS")
     # (aurora registers its own tests, unbuilt here).
     enable_testing()
     add_custom_target(unit_tests)
+    # LANVIBE experimental multiplayer roster test (no game/network dependencies).
+    add_executable(net_multi_roster_test EXCLUDE_FROM_ALL
+        tools/test_net_multi_roster.c
+        src/pc/net_multi_roster.c)
+    target_include_directories(net_multi_roster_test PRIVATE src/pc)
+    target_compile_options(net_multi_roster_test PRIVATE -UNDEBUG)
+    add_test(NAME net_multi_roster COMMAND net_multi_roster_test)
+    set_tests_properties(net_multi_roster PROPERTIES LABELS melee TIMEOUT 30)
+    add_dependencies(unit_tests net_multi_roster_test)
     add_executable(launcher_data_test EXCLUDE_FROM_ALL tools/test_launcher_data.cpp src/pc/launcher_data.cpp src/pc/disc_open.c)
     target_include_directories(launcher_data_test PRIVATE src)
     target_link_libraries(launcher_data_test PRIVATE aurora::dvd ${MELEE_CRYPTO_LIBS})
